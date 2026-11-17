@@ -12,7 +12,7 @@
 </head>
 <body>
 <h1>Car Assistant – Privacy Policy</h1>
-<p><small>Last updated: 16 November 2026</small></p>
+<p><small>Last updated: 17 November 2026 (conversation memory, location services)</small></p>
 
 <p>Car Assistant is a private, non-commercial voice assistant for a single household's car. It is not offered to the public.
 This page explains what data it uses and why.</p>
@@ -32,7 +32,10 @@ This page explains what data it uses and why.</p>
       (for example event title, time and location) are used.</li>
   <li>To speak the answer, those items are passed to the voice AI service (OpenAI Realtime API) for that one conversation.
       They are not used to train AI models, for advertising, or for any other purpose.</li>
-  <li>Calendar and email content is not stored by Car Assistant. It is fetched when needed and discarded after the answer.</li>
+  <li>Calendar and email content is not stored by Car Assistant's server. So that follow-up questions work ("how far is it from
+      there?"), the phone keeps a short recap of the conversation, including the details that were looked up, in its working
+      memory only: never saved to storage, deleted after a period the user chooses (5 hours by default) or when the app closes,
+      and only ever used for the same person.</li>
   <li>Google user data is not sold or transferred to anyone else.</li>
 </ul>
 
@@ -45,7 +48,9 @@ This page explains what data it uses and why.</p>
 </ul>
 
 <h2>Location</h2>
-<p>If enabled, the phone's location is sent with a question that needs it (weather, nearby places, research). It is not stored.</p>
+<p>If enabled, the phone's location is sent only with a question that needs it, and is not stored. It is shared with the
+service that answers that question: the weather services Open-Meteo and Buienradar (rounded to about 1 km), Google Places for
+nearby places, and the research service for "near me" questions. "Where am I?" is answered on the phone itself.</p>
 
 <h2>Your control</h2>
 <ul>
