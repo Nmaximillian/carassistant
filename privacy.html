@@ -12,10 +12,30 @@
 </head>
 <body>
 <h1>Car Assistant – Privacy Policy</h1>
-<p><small>Last updated: 17 November 2026 (conversation memory, location services)</small></p>
+<p><small>Last updated: 21 November 2026 (voice and research services, caches, location, test recordings, deletion)</small></p>
 
 <p>Car Assistant is a private, non-commercial voice assistant for a single household's car. It is not offered to the public.
-This page explains what data it uses and why.</p>
+This page explains what data it uses, where it goes and how long it is kept. "The household's server" is a computer the
+household runs itself.</p>
+
+<h2>Voice and questions</h2>
+<ul>
+  <li>Listening for the wake phrase and checking who is speaking happen on the phone.</li>
+  <li>Once the speaker is recognised, what they say is sent to OpenAI's Realtime API, which understands the request and
+      speaks the answer. Results of the lookups it asks for (for example calendar items or the weather) are passed to it
+      for that answer.</li>
+  <li>General-knowledge questions, explanations, advice and questions needing current information ("research") may be
+      sent through the household's server to Anthropic's Claude service, which may answer from its own knowledge or search
+      and open public web pages. Approximate location and country go with them (see Location). The assistant is
+      instructed to leave out personal details and calendar or email content, except a place or address needed to answer
+      the question.</li>
+  <li>Under OpenAI's and Anthropic's API terms, data sent through their APIs is not used to train their models unless the
+      account holder opts in; that is not the same as not keeping it at all (see
+      <a href="https://developers.openai.com/api/docs/guides/your-data">OpenAI</a> and
+      <a href="https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training">Anthropic</a>). Car
+      Assistant never uses Google data or conversations for advertising or profiling. Diagnostic information and the optional
+      test recordings are used to troubleshoot and improve the assistant, as described below.</li>
+</ul>
 
 <h2>Google account data</h2>
 <p>When a household member links a Google account, the app requests <strong>read-only</strong> access to:</p>
@@ -25,38 +45,89 @@ This page explains what data it uses and why.</p>
   <li>The account's email address (<code>openid</code>, <code>email</code>): to show which account is linked.</li>
 </ul>
 <p>The app never creates, changes, sends or deletes calendar events or emails.</p>
-
-<h2>How the data is used</h2>
 <ul>
-  <li>Calendar and email data is read only when the verified account owner asks a question, and only the items needed for the answer
-      (for example event title, time and location) are used.</li>
-  <li>To speak the answer, those items are passed to the voice AI service (OpenAI Realtime API) for that one conversation.
-      They are not used to train AI models, for advertising, or for any other purpose.</li>
-  <li>Calendar and email content is not stored by Car Assistant's server. So that follow-up questions work ("how far is it from
-      there?"), the phone keeps a short recap of the conversation, including the details that were looked up, in its working
-      memory only: never saved to storage, deleted after a period the user chooses (5 hours by default) or when the app closes,
-      and only ever used for the same person.</li>
-  <li>Google user data is not sold or transferred to anyone else.</li>
-</ul>
-
-<h2>What is stored</h2>
-<ul>
-  <li>The linked account's email address, a label ("personal" / "work"), and Google's refresh token. The token is encrypted on the
-      household's own server and is used only to read the scopes listed above.</li>
-  <li>Voice profiles (used to recognise who is speaking) stay encrypted on the phone and are never uploaded.</li>
-  <li>Audit records contain no message, calendar or voice content and are deleted after 30 days.</li>
+  <li>Calendar and email data is read only when the verified account holder asks a question, and only the items needed for
+      the answer (for example event title, time and location) are used. They are passed to OpenAI to speak the answer, as
+      described above.</li>
+  <li>The household's server keeps each lookup's result in its memory for up to 10 minutes, so a retried request isn't
+      looked up twice. It is never written to disk.</li>
+  <li>So that follow-up questions work ("how far is it from there?"), the phone keeps a short recap of recent conversations,
+      including the details that were looked up, in its memory only (never saved to storage). It is used only for the same
+      person, and sent to OpenAI at the start of that person's next conversation. Entries older than a period the user
+      chooses (5 hours by default) are removed when the recap is next used or updated. Tapping Stop or closing the app's
+      screen does not necessarily clear it; it is cleared when the app's process ends, or with "Forget now" or "Delete
+      everything".</li>
+  <li>Google user data is not sold. The details needed for an answer are shared with OpenAI. When a requested place
+      search, research answer or navigation needs it, a place or address from those details may also go to the service
+      described below (Google Places, Claude or Google Maps).</li>
 </ul>
 
 <h2>Location</h2>
-<p>If enabled, the phone's location is sent only with a question that needs it, and is not stored. It is shared with the
-service that answers that question: the weather services Open-Meteo and Buienradar (rounded to about 1 km), Google Places for
-nearby places, and the research service for "near me" questions. "Where am I?" is answered on the phone itself.</p>
+<p>If location sharing is on and the phone has a fix, its location goes with every request the phone makes to the
+household's server for a lookup; how precise it is depends on the app's location setting and the permission given.
+The server keeps no location history, though lookup results that depend on location can stay in the temporary caches
+described above. It is passed on to the service doing the lookup: the weather
+services Open-Meteo and Buienradar (rounded to about 1 km), Google Places for nearby places, and Claude for research
+questions (approximately). "Where am I?" uses Android's address lookup, which may use the network, and the resulting place
+is passed to OpenAI to say the answer. Saved places (names and addresses) are kept in the app's private storage on the
+phone until removed. Their names are given to the assistant, and a destination is handed to Google Maps to navigate.</p>
+
+<h2>Music</h2>
+<p>To play music, the household's server sends search words from the request (for example "Adele Hello") to YouTube's
+search service (YouTube Data API), using the app's own API key: no Google account, location or audio is sent with it. The
+phone then opens the song in YouTube Music, or, if nothing was found, passes the search words to YouTube Music. YouTube
+Music works under its own settings and privacy policy. The server keeps the search result in memory for up to 10 minutes
+and never writes it to disk or its logs. The phone's recap (above) may remember what was played.</p>
+
+<h2>What is stored on the household's server</h2>
+<ul>
+  <li>For a linked Google account: its email address, a label ("personal" / "work"), and Google's refresh token, encrypted,
+      used only to read the scopes listed above.</li>
+  <li>Profiles: an identifier, display name, role, whether it is enabled, and which tools it may use. Voice samples
+      recorded to set up a profile are processed on the phone and then discarded; the resulting voiceprints, used to
+      recognise who is speaking, stay encrypted on the phone and are never uploaded.</li>
+  <li>The phone's registration, its settings and consent records.</li>
+  <li>Audit records (what was done and when; no message, calendar or voice content). Database records older than 30 days
+      are removed by a periodic cleanup. The server's own operating logs may contain the same entries.</li>
+</ul>
+
+<h2>Optional test-drive features (all off by default)</h2>
+<ul>
+  <li><strong>Send the Diagnostics log to my server:</strong> the app's diagnostic log (states, timings, voice-check scores,
+      error messages, and short snippets of recognised words when a wake phrase was missed or during wake and
+      pronunciation tests) is stored on the household's server. No audio. Error messages are stored as they are; they are
+      not meant to contain conversations, calendar or email content, but they are not filtered. A day's file is removed by
+      a periodic cleanup once seven days have passed since the file was last written.</li>
+  <li><strong>Wake test log:</strong> once switched on, it stays on every time the assistant listens, also after Stop and
+      app restarts, until it is switched off or "Delete everything" is used. While on, up to the first 4 recognised words
+      of each thing the phone hears while waiting for the wake phrase are added to the diagnostic log, including what
+      passengers say and the start of a question asked when the wake phrase was missed. Words only, no audio; not the
+      answers, and not questions asked after the assistant woke. They reach the household's server only if "Send the
+      Diagnostics log" is also on.</li>
+  <li><strong>Share diagnostic events with my server:</strong> state changes, timings and voice-check scores, without audio
+      or transcripts, go to the server's operating logs.</li>
+  <li><strong>Record test audio:</strong> needs the phone's fingerprint or screen lock to switch on. While on, what the
+      phone's microphone hears during listening is recorded: questions, the assistant's spoken answers, passengers, music
+      and the radio, so everyone in the car should be told. The recordings are used, on the household's own computer, to
+      develop and test wake-phrase detection, speech detection and the voice check, including training the household's
+      own wake-phrase model. Recording stops at Stop, after 30 minutes of audio, or when the
+      app restarts; pieces already recorded may still be uploaded after that. The audio goes in pieces of up to a minute to
+      the household's server only; this feature never sends it to OpenAI, Anthropic or anyone else. Until a piece is
+      uploaded it waits encrypted on the phone; pieces older than a day are removed there when the app starts or saves or
+      sends a piece. On the server, recordings are removed by a periodic cleanup 14 days after they arrived.</li>
+</ul>
 
 <h2>Your control</h2>
 <ul>
-  <li>Unlink an account in the app (Voices → Unlink). This revokes the access at Google and deletes the stored token.</li>
-  <li>You can also revoke access at any time at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</li>
-  <li>Deleting a person's profile in the app revokes all of their linked accounts.</li>
+  <li><strong>Delete everything</strong> (in the app, Setup → Privacy) deletes all profiles and voiceprints, saved places,
+      the recap, the device's signing keys and settings on the phone, and unsent test recordings. It asks the household's server to delete this
+      phone's diagnostic log lines, test recordings, settings, consent and audit records; that needs a connection, and the
+      app says if it failed. It does not unlink Google accounts: unlink them first (below).</li>
+  <li><strong>Unlink an account</strong> in the app (Voices → Unlink) deletes the stored link and token from the server and
+      asks Google to revoke the access. Deleting a person's profile does the same for all of their linked accounts. Both
+      need a connection to the server, and Google's revocation can fail, so to be sure, also check
+      <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>, where access can be revoked
+      at any time.</li>
 </ul>
 
 <h2>Google API Services User Data Policy</h2>
